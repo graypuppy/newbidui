@@ -31,7 +31,7 @@ export const getSupportedCheckTypes = (fileName: string) => {
 
 export const getDisabledItems = (fileName: string) => {
   const types = getFileSupportedTypes(fileName);
-  const disabledItems: string[] = ['图片文字OCR查重'];
+  const disabledItems: string[] = [];
   if (types.includes('技术标(不含属性)')) {
     disabledItems.push('文档属性');
   }

@@ -92,7 +92,7 @@ const TechTab: React.FC<TechTabProps> = ({
 
        // Determine content type
        let contentType: 'text' | 'image' | 'table' | 'sensitive' = 'text';
-       if (item.type === 'image' || item.type === 'ocr' || item.type === 'signature') {
+       if (item.type === 'image') {
          contentType = 'image';
        } else if (item.type === 'table') {
          contentType = 'table';
@@ -108,7 +108,7 @@ const TechTab: React.FC<TechTabProps> = ({
         isOpen: true,
         fileName: currentFileName,
         value: item.name || item.keyword,
-        type: item.type === 'image' ? '图片查重' : item.type === 'ocr' ? 'OCR查重' : item.type === 'signature' ? '签章查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
+        type: item.type === 'image' ? '图片查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
         contentType: contentType,
         duplicates: duplicates,
         item: item
@@ -150,10 +150,7 @@ const TechTab: React.FC<TechTabProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {[
           { key: 'images', icon: Image, color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-100' },
-          { key: 'ocr', icon: ScanText, color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-100' },
           { key: 'table', icon: Table, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-          { key: 'signature', icon: PenTool, color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100' },
-          { key: 'citation', icon: Quote, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-100' },
           { key: 'sensitive', icon: ShieldAlert, color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100' }
         ].map(({ key, icon: Icon, color, bg, border }) => {
           const section = mockTechDetails[key as keyof typeof mockTechDetails];

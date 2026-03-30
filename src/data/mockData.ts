@@ -16,6 +16,7 @@ export const generateMockCreditDataByField = (creditItems: string[], comparingFi
         else if (item === '统一社会信用代码比对') values = i % 2 === 0 ? ['91110108MA00123456'] : ['91310115MA00987654'];
         else if (item === '签章查重') values = i % 2 === 0 ? ['检测到有效电子签章'] : ['未检测到签章'];
         else if (item === '引用内容查重') values = i % 2 === 0 ? ['引用《建筑设计规范》第3.2条'] : ['无引用内容'];
+        else if (item === '图片文字OCR查重') values = i % 2 === 0 ? ['图片文字提取正常'] : ['发现重复图片文字内容'];
         else values = [`合规数据 ${i}-${j}-A`, `合规数据 ${i}-${j}-B`];
         
         // Add some cross-file duplicates to test highlighting
@@ -77,7 +78,7 @@ export const generateMockTechDetails = (comparingFiles: any[]) => {
       ]
     },
     ocr: {
-      title: '敬请期待',
+      title: '图片文字OCR查重',
       desc: '识别图片中的文字内容进行比对',
       items: [
         { id: 4, type: 'ocr', name: '流程图文字', context: '第五章 实施流程 - 流程图文字内容', status: 'fail', desc: '发现高度相似的流程描述文字', similarity: '98%', page: 52, content: '项目启动 -> 需求分析 -> 系统设计 -> 开发实施 -> 测试验收', fileName: comparingFiles[0]?.name },

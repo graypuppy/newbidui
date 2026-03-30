@@ -299,7 +299,7 @@ export default function App() {
     { id: 'm7', name: '中建七局-非加密投标文件.SXTB4' },
     { id: 'm8', name: '中建八局-非加密投标文件.SXTB4' },
   ];
-  const creditItems = selectedCreditItems?.length > 0 ? selectedCreditItems : ['法定代表人名称比对', '法定代表人身份证比对', '人员名称比对', '人员身份证比对', '地址比对', '统一社会信用代码比对'];
+  const creditItems = selectedCreditItems?.length > 0 ? selectedCreditItems : ALL_CREDIT_ITEMS;
 
   const availableCheckTypes = files?.length > 0 
     ? getSupportedCheckTypes(files[0].name)
@@ -336,7 +336,7 @@ export default function App() {
 
        // Determine content type
        let contentType: 'text' | 'image' | 'table' | 'sensitive' = 'text';
-       if (item.type === 'image' || item.type === 'ocr' || item.type === 'signature') {
+       if (item.type === 'image') {
          contentType = 'image';
        } else if (item.type === 'table') {
          contentType = 'table';
@@ -352,7 +352,7 @@ export default function App() {
         isOpen: true,
         fileName: currentFileName,
         value: item.name || item.keyword,
-        type: item.type === 'image' ? '图片查重' : item.type === 'ocr' ? 'OCR查重' : item.type === 'signature' ? '签章查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
+        type: item.type === 'image' ? '图片查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
         contentType: contentType,
         duplicates: duplicates,
         item: item

@@ -123,6 +123,31 @@ const Home: React.FC<HomeProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: History */}
         <div className="lg:col-span-2 space-y-8">
+          {/* Inspection Points Section */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                系统检查点
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {INSPECTION_POINTS.map((point) => (
+                <div key={point.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 rounded-xl bg-slate-50 group-hover:bg-white group-hover:shadow-inner transition-colors">
+                      {point.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-800 mb-1">{point.title}</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">{point.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* History Section */}
           <section>
             <div className="flex items-center justify-between mb-4">
