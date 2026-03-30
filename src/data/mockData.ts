@@ -16,7 +16,6 @@ export const generateMockCreditDataByField = (creditItems: string[], comparingFi
         else if (item === '统一社会信用代码比对') values = i % 2 === 0 ? ['91110108MA00123456'] : ['91310115MA00987654'];
         else if (item === '签章查重') values = i % 2 === 0 ? ['检测到有效电子签章'] : ['未检测到签章'];
         else if (item === '引用内容查重') values = i % 2 === 0 ? ['引用《建筑设计规范》第3.2条'] : ['无引用内容'];
-        else if (item === '图片文字OCR查重') values = i % 2 === 0 ? ['图片文字提取正常'] : ['发现重复图片文字内容'];
         else values = [`合规数据 ${i}-${j}-A`, `合规数据 ${i}-${j}-B`];
         
         // Add some cross-file duplicates to test highlighting
@@ -77,36 +76,12 @@ export const generateMockTechDetails = (comparingFiles: any[]) => {
         { id: 3, type: 'image', name: '资质证书扫描件', context: '附件一 资质证明文件', status: 'pass', desc: '未发现重复图片', similarity: '0%', page: 88, rect: { x: 100, y: 100, w: 400, h: 600 }, fileName: comparingFiles[0]?.name },
       ]
     },
-    ocr: {
-      title: '图片文字OCR查重',
-      desc: '识别图片中的文字内容进行比对',
-      items: [
-        { id: 4, type: 'ocr', name: '流程图文字', context: '第五章 实施流程 - 流程图文字内容', status: 'fail', desc: '发现高度相似的流程描述文字', similarity: '98%', page: 52, content: '项目启动 -> 需求分析 -> 系统设计 -> 开发实施 -> 测试验收', fileName: comparingFiles[0]?.name },
-        { id: 5, type: 'ocr', name: '截图文字', context: '第六章 界面展示 - 系统截图', status: 'pass', desc: '图片文字内容无异常重复', similarity: '15%', page: 63, content: '系统登录界面...', fileName: comparingFiles[0]?.name }
-      ]
-    },
     table: {
       title: '表格文字查重',
       desc: '提取文档中的表格数据进行比对',
       items: [
         { id: 6, type: 'table', name: '人员配置表', context: '第七章 项目团队 - 7.1 人员配置', status: 'fail', desc: '表格内容与历史项目高度雷同', similarity: '100%', page: 71, content: '项目经理: 张三; 技术总监: 李四...', fileName: comparingFiles[0]?.name },
         { id: 7, type: 'table', name: '设备参数表', context: '第八章 设备清单 - 8.2 参数指标', status: 'pass', desc: '表格数据正常', similarity: '5%', page: 85, content: '服务器: CPU 64核, 内存 512G...', fileName: comparingFiles[0]?.name }
-      ]
-    },
-    signature: {
-      title: '签章查重',
-      desc: '检测电子签章的有效性及重复使用情况',
-      items: [
-        { id: 8, type: 'signature', name: '法人章', context: '签署页 - 法人代表签字', status: 'fail', desc: '发现同一签章在不同文档中位置完全一致（疑似PS）', similarity: '100%', page: 99, rect: { x: 400, y: 700, w: 100, h: 50 }, fileName: comparingFiles[0]?.name },
-        { id: 9, type: 'signature', name: '公章', context: '签署页 - 公司公章', status: 'pass', desc: '签章特征正常', similarity: '0%', page: 99, rect: { x: 350, y: 650, w: 150, h: 150 }, fileName: comparingFiles[0]?.name }
-      ]
-    },
-    citation: {
-      title: '引用内容查重',
-      desc: '检测文档引用的标准、规范等内容',
-      items: [
-        { id: 10, type: 'citation', name: '国家标准引用', context: '第二章 编制依据', status: 'pass', desc: '引用标准规范准确', similarity: '0%', page: 5, content: 'GB/T 12345-2023 信息安全技术...', fileName: comparingFiles[0]?.name },
-        { id: 11, type: 'citation', name: '行业案例引用', context: '第九章 类似案例', status: 'fail', desc: '案例描述与[文件B]完全一致', similarity: '100%', page: 92, content: '某市智慧城市建设项目...', fileName: comparingFiles[0]?.name }
       ]
     },
     sensitive: {
