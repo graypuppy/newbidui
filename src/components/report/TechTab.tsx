@@ -37,22 +37,9 @@ const TechTab: React.FC<TechTabProps> = ({
   const [techFileA, setTechFileA] = useState(comparingFiles[0]?.id || '');
   const [techFileB, setTechFileB] = useState(comparingFiles[1]?.id || '');
   const [activeDuplicateId, setActiveDuplicateId] = useState<string | null>(null);
-  const [matrixType, setMatrixType] = useState<'text' | 'ai'>('text');
+  const [showDetail, setShowDetail] = useState(false);
 
   const textMatrix = useMemo(() => generateMockSimilarityMatrix(comparingFiles), [comparingFiles]);
-  const aiMatrix = useMemo(() => {
-    // Slightly different scores for AI matrix
-    return generateMockSimilarityMatrix(comparingFiles).map(row => ({
-      ...row,
-      scores: Object.fromEntries(Object.entries(row.scores).map(([id, score]) => {
-        if (score === '100%') return [id, score];
-        const val = parseInt(score as string);
-        return [id, `${Math.max(0, val - 5 + Math.floor(Math.random() * 10))}%`];
-      }))
-    }));
-  }, [comparingFiles]);
-
-  const currentMatrix = matrixType === 'text' ? textMatrix : aiMatrix;
 
   const pdfARef = useRef<HTMLDivElement>(null);
   const pdfBRef = useRef<HTMLDivElement>(null);
@@ -75,11 +62,14 @@ const TechTab: React.FC<TechTabProps> = ({
     if (fileAId === fileBId) return;
     setTechFileA(fileAId);
     setTechFileB(fileBId);
+    setShowDetail(true);
     // Scroll to the comparison section
-    const comparisonSection = document.getElementById('text-comparison-section');
-    if (comparisonSection) {
-      comparisonSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    setTimeout(() => {
+      const comparisonSection = document.getElementById('text-comparison-section');
+      if (comparisonSection) {
+        comparisonSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleTechItemClick = (item: any) => {
@@ -118,7 +108,7 @@ const TechTab: React.FC<TechTabProps> = ({
         isOpen: true,
         fileName: currentFileName,
         value: item.name || item.keyword,
-        type: item.type === 'image' ? '图片查重' : item.type === 'ocr' ? '敬请期待' : item.type === 'signature' ? '签章查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
+        type: item.type === 'image' ? '图片查重' : item.type === 'ocr' ? 'OCR查重' : item.type === 'signature' ? '签章查重' : item.type === 'table' ? '表格查重' : item.type === 'sensitive' ? '敏感信息查重' : item.type,
         contentType: contentType,
         duplicates: duplicates,
         item: item
@@ -244,23 +234,9 @@ const TechTab: React.FC<TechTabProps> = ({
               <Grid3X3 className="w-5 h-5"/>
             </div>
             <div>
-              <h3 className="font-bold text-slate-800">多文件横向比对矩阵</h3>
+              <h3 className="font-bold text-slate-800">文本内容深度查重 (含AI语义分析) 横向比对矩阵</h3>
               <p className="text-xs text-slate-500">点击单元格查看两两比对详情</p>
             </div>
-          </div>
-          <div className="flex bg-slate-200 p-1 rounded-lg">
-            <button 
-              onClick={() => setMatrixType('text')}
-              className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${matrixType === 'text' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
-            >
-              <FileSearch className="w-3.5 h-3.5"/> 文本内容深度查重
-            </button>
-            <button 
-              onClick={() => setMatrixType('ai')}
-              className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${matrixType === 'ai' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
-            >
-              <BrainCircuit className="w-3.5 h-3.5"/> AI语义分析查重
-            </button>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -276,7 +252,7 @@ const TechTab: React.FC<TechTabProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {currentMatrix.map((row) => (
+              {textMatrix.map((row) => (
                 <tr key={row.fileId} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-4 px-6 font-medium text-slate-700 sticky left-0 bg-white z-10 border-r border-slate-200">
                     {row.fileName}
@@ -285,12 +261,13 @@ const TechTab: React.FC<TechTabProps> = ({
                     const score = row.scores[f.id];
                     const scoreVal = parseInt(score);
                     const isSelf = row.fileId === f.id;
+                    const isSelected = !isSelf && showDetail && ((techFileA === row.fileId && techFileB === f.id) || (techFileA === f.id && techFileB === row.fileId));
                     
                     return (
                       <td 
                         key={f.id} 
                         onClick={() => !isSelf && handleMatrixCellClick(row.fileId, f.id)}
-                        className={`py-6 px-4 text-center transition-all ${isSelf ? 'bg-slate-50 text-slate-300' : 'cursor-pointer hover:bg-indigo-50 group'}`}
+                        className={`py-6 px-4 text-center transition-all ${isSelf ? 'bg-slate-50 text-slate-300' : 'cursor-pointer hover:bg-indigo-50 group'} ${isSelected ? 'bg-indigo-50 ring-2 ring-inset ring-indigo-500' : ''}`}
                       >
                         {!isSelf ? (
                           <div className="flex flex-col items-center gap-1">
@@ -316,77 +293,87 @@ const TechTab: React.FC<TechTabProps> = ({
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* Section 3: Text Comparison (Existing) */}
-      <div id="text-comparison-section" className="flex h-[600px] bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex-col">
-         <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileSearch className="w-5 h-5 text-emerald-500"/> 
-            <h3 className="font-bold text-slate-800">
-              {matrixType === 'text' ? '文本内容深度查重' : 'AI语义分析查重'} 详情比对
-            </h3>
-            <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100 text-xs font-bold">
-              <span>{comparingFiles.find(f => f.id === techFileA)?.name}</span>
-              <ChevronRight className="w-3 h-3"/>
-              <span>{comparingFiles.find(f => f.id === techFileB)?.name}</span>
-            </div>
-          </div>
-          <span className="text-xs text-slate-500">
-            发现 {mockDuplicates.length} 处高度相似段落
-          </span>
-        </div>
-        <div className="flex-1 flex overflow-hidden">
-          {/* Left: Duplicates List */}
-          <div className="w-80 border-r border-slate-200 bg-slate-50 flex flex-col">
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {mockDuplicates.map(dup => (
+        {/* Integrated Detail Comparison Section */}
+        {showDetail && (
+          <div id="text-comparison-section" className="flex h-[600px] border-t border-slate-200 overflow-hidden flex-col bg-slate-50">
+            <div className="p-4 border-b border-slate-200 bg-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileSearch className="w-5 h-5 text-emerald-500"/> 
+                <h3 className="font-bold text-slate-800">
+                  文本内容深度查重 (含AI语义分析) 详情比对
+                </h3>
+                <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100 text-xs font-bold">
+                  <span>{comparingFiles.find(f => f.id === techFileA)?.name}</span>
+                  <ChevronRight className="w-3 h-3"/>
+                  <span>{comparingFiles.find(f => f.id === techFileB)?.name}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-slate-500">
+                  发现 {mockDuplicates.length} 处高度相似段落
+                </span>
                 <button 
-                  key={dup.id}
-                  onClick={() => handleDuplicateClick(dup)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all ${activeDuplicateId === dup.id ? 'bg-indigo-50 border-indigo-300 shadow-sm ring-1 ring-indigo-500/20' : 'bg-white border-slate-200 hover:border-indigo-200 hover:shadow-sm'}`}
+                  onClick={() => setShowDetail(false)}
+                  className="text-xs text-slate-400 hover:text-slate-600 font-medium"
                 >
-                  <div className="font-bold text-sm text-slate-800 mb-2">{dup.title}</div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500">相似度</span>
-                    <span className="font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">{dup.similarity}</span>
-                  </div>
+                  收起详情
                 </button>
-              ))}
+              </div>
             </div>
-          </div>
+            <div className="flex-1 flex overflow-hidden">
+              {/* Left: Duplicates List */}
+              <div className="w-80 border-r border-slate-200 bg-white flex flex-col">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {mockDuplicates.map(dup => (
+                    <button 
+                      key={dup.id}
+                      onClick={() => handleDuplicateClick(dup)}
+                      className={`w-full text-left p-4 rounded-xl border transition-all ${activeDuplicateId === dup.id ? 'bg-indigo-50 border-indigo-300 shadow-sm ring-1 ring-indigo-500/20' : 'bg-white border-slate-200 hover:border-indigo-200 hover:shadow-sm'}`}
+                    >
+                      <div className="font-bold text-sm text-slate-800 mb-2">{dup.title}</div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate-500">相似度</span>
+                        <span className="font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">{dup.similarity}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          {/* Right: PDF Views */}
-          <div className="flex-1 flex bg-slate-200 p-5 gap-5 overflow-hidden">
-            {/* File A */}
-            <div className="flex-1 flex flex-col shadow-sm rounded-lg overflow-hidden">
-              <div className="bg-white border-b border-slate-200 p-2 flex items-center">
-                <select 
-                  value={techFileA} 
-                  onChange={e => setTechFileA(e.target.value)}
-                  className="w-full p-2 rounded bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                >
-                  {comparingFiles.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
-                </select>
+              {/* Right: PDF Views */}
+              <div className="flex-1 flex bg-slate-200 p-5 gap-5 overflow-hidden">
+                {/* File A */}
+                <div className="flex-1 flex flex-col shadow-sm rounded-lg overflow-hidden">
+                  <div className="bg-white border-b border-slate-200 p-2 flex items-center">
+                    <select 
+                      value={techFileA} 
+                      onChange={e => setTechFileA(e.target.value)}
+                      className="w-full p-2 rounded bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    >
+                      {comparingFiles.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                    </select>
+                  </div>
+                  {renderMockPdfPage(techFileA, pdfARef, true)}
+                </div>
+                
+                {/* File B */}
+                <div className="flex-1 flex flex-col shadow-sm rounded-lg overflow-hidden">
+                  <div className="bg-white border-b border-slate-200 p-2 flex items-center">
+                    <select 
+                      value={techFileB} 
+                      onChange={e => setTechFileB(e.target.value)}
+                      className="w-full p-2 rounded bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    >
+                      {comparingFiles.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                    </select>
+                  </div>
+                  {renderMockPdfPage(techFileB, pdfBRef, false)}
+                </div>
               </div>
-              {renderMockPdfPage(techFileA, pdfARef, true)}
-            </div>
-            
-            {/* File B */}
-            <div className="flex-1 flex flex-col shadow-sm rounded-lg overflow-hidden">
-              <div className="bg-white border-b border-slate-200 p-2 flex items-center">
-                <select 
-                  value={techFileB} 
-                  onChange={e => setTechFileB(e.target.value)}
-                  className="w-full p-2 rounded bg-slate-50 border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                >
-                  {comparingFiles.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
-                </select>
-              </div>
-              {renderMockPdfPage(techFileB, pdfBRef, false)}
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

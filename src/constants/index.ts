@@ -4,7 +4,7 @@ import { Template } from '../types';
 
 export const ALL_CHECK_TYPES = ['资信标比对', '技术标比对', '经济标比对', '文件设备特征比对'];
 export const ALL_CREDIT_ITEMS = ['法定代表人名称比对', '法定代表人身份证比对', '人员名称比对', '人员身份证比对', '手机号比对', '邮箱比对', '证书编号比对', '业绩名称比对', '地址比对', '统一社会信用代码比对', '签章查重', '引用内容查重'];
-export const ALL_TECH_ITEMS = ['全文语句雷同比对', '图片查重', '图片文字OCR查重', '表格文字查重', '敏感信息查重'];
+export const ALL_TECH_ITEMS = ['文本内容深度查重 (含AI语义分析)', '图片查重', '图片文字OCR查重', '表格文字查重', '敏感信息查重'];
 export const ALL_ECONOMIC_ITEMS = ['项目属性分析（软硬件信息）', '错误一致性分析', '清单报价分析', '定额子目分析', '项目人材机汇总分析'];
 export const ALL_DEVICE_ITEMS = ['文件属性查重', '计算机名比对', '计算机用户名比对', '文件操作来源比对', '文件创建码比对', 'MAC地址比对', 'CPU序列号比对', '文件生成锁号比对', '硬盘序列号比对', '主板序列号比对', '机器特征码比对'];
 
@@ -16,10 +16,34 @@ export const INSPECTION_POINTS = [
 ];
 
 export const NEWS_ITEMS = [
-  { id: 1, date: '2026-03-02', title: '系统升级公告：新增PDF文档深度解析算法，提升比对精度', type: '公告' },
-  { id: 2, date: '2026-02-28', title: '如何利用多版本比对功能快速定位合同条款变更？', type: '指南' },
-  { id: 3, date: '2026-02-15', title: '如何将你的多份投标文件进行版本管理，比对重复度', type: '案例' },
-  { id: 4, date: '2026-01-20', title: '关于优化大文件（>50MB）比对速度的更新说明', type: '更新' },
+  { 
+    id: 1, 
+    date: '2026-03-02', 
+    title: '系统升级公告：新增PDF文档深度解析算法，提升比对精度', 
+    type: '公告',
+    content: '本次升级引入了全新的PDF文档深度解析算法，能够更精准地提取文档中的文本、表格及图片信息。特别是在处理扫描件和复杂排版文档时，比对精度提升了约35%。建议用户在进行技术标比对时，优先选择PDF格式以获得最佳效果。'
+  },
+  { 
+    id: 2, 
+    date: '2026-02-28', 
+    title: '如何利用多版本比对功能快速定位合同条款变更？', 
+    type: '指南',
+    content: '在合同审查过程中，快速识别不同版本间的条款差异至关重要。您可以将原版合同与修订版同时上传，系统会自动高亮显示新增、删除及修改的内容。通过侧边栏的差异列表，您可以一键跳转到具体的变更位置，极大提高了法务审核的效率。'
+  },
+  { 
+    id: 3, 
+    date: '2026-02-15', 
+    title: '如何将你的多份投标文件进行版本管理，比对重复度', 
+    type: '案例',
+    content: '某大型建筑企业在处理投标任务时，经常需要参考历史标书。通过本系统的版本管理功能，他们将过去三年的标书全部导入，利用“技术标比对”功能检测新标书与旧标书的雷同度。这不仅避免了低级错误的重复出现，还确保了技术方案的独特性和竞争力。'
+  },
+  { 
+    id: 4, 
+    date: '2026-01-20', 
+    title: '关于优化大文件（>50MB）比对速度的更新说明', 
+    type: '更新',
+    content: '针对用户反馈的大文件比对速度较慢的问题，我们优化了后端分布式计算引擎。现在，超过50MB的超大型文档比对速度提升了50%以上。同时，我们增加了后台异步处理机制，您可以提交任务后关闭页面，待任务完成后系统会通过站内信通知您。'
+  },
 ];
 
 export const HISTORY_ITEMS = [
@@ -42,8 +66,7 @@ export const DEFAULT_TEMPLATES: Template[] = [
       economic: ALL_ECONOMIC_ITEMS,
       device: ALL_DEVICE_ITEMS,
       threshold: 30,
-      filterBiddingDoc: true,
-      enableAI: true
+      filterBiddingDoc: true
     }
   },
   {
@@ -57,8 +80,7 @@ export const DEFAULT_TEMPLATES: Template[] = [
       economic: [],
       device: ['MAC地址比对', '计算机名比对'],
       threshold: 50,
-      filterBiddingDoc: false,
-      enableAI: false
+      filterBiddingDoc: false
     }
   },
   {
@@ -72,8 +94,7 @@ export const DEFAULT_TEMPLATES: Template[] = [
       economic: [],
       device: ALL_DEVICE_ITEMS,
       threshold: 20,
-      filterBiddingDoc: true,
-      enableAI: true
+      filterBiddingDoc: true
     }
   }
 ];

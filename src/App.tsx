@@ -124,7 +124,6 @@ export default function App() {
     filterBiddingDoc, setFilterBiddingDoc,
     biddingDocFile, setBiddingDocFile,
     biddingDocError, setBiddingDocError,
-    enableAI, setEnableAI,
     showPurchaseModal, setShowPurchaseModal,
     selectedSku, setSelectedSku,
     comparingProgress, setComparingProgress,
@@ -225,8 +224,7 @@ export default function App() {
         economic: [],
         device: [],
         threshold: 30,
-        filterBiddingDoc: false,
-        enableAI: false
+        filterBiddingDoc: false
       }
     });
     setIsTemplateEditorOpen(true);
@@ -281,7 +279,6 @@ export default function App() {
       setSelectedDeviceItems(tpl.config.device);
       setThreshold(tpl.config.threshold);
       setFilterBiddingDoc(tpl.config.filterBiddingDoc);
-      setEnableAI(tpl.config.enableAI);
     }
   };
 
@@ -838,8 +835,6 @@ export default function App() {
               removeBiddingDoc={removeBiddingDoc}
               handleBiddingDocInput={handleBiddingDocInput}
               biddingDocError={biddingDocError}
-              enableAI={enableAI}
-              setEnableAI={setEnableAI}
             />
           )}
 

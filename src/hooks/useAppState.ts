@@ -82,7 +82,6 @@ export function useAppState() {
   const [filterBiddingDoc, setFilterBiddingDoc] = useState(true);
   const [biddingDocFile, setBiddingDocFile] = useState<{id: string, name: string, size: number} | null>(null);
   const [biddingDocError, setBiddingDocError] = useState<string | null>(null);
-  const [enableAI, setEnableAI] = useState(true);
 
   // Purchase & Comparing State
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
@@ -149,7 +148,6 @@ export function useAppState() {
     filterBiddingDoc, setFilterBiddingDoc,
     biddingDocFile, setBiddingDocFile,
     biddingDocError, setBiddingDocError,
-    enableAI, setEnableAI,
     showPurchaseModal, setShowPurchaseModal,
     selectedSku, setSelectedSku,
     comparingProgress, setComparingProgress,

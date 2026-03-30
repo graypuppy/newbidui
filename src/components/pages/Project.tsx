@@ -56,8 +56,7 @@ interface ProjectProps {
   biddingDocFile: { id: string; name: string; size: number } | null;
   biddingDocError: string | null;
   handleBiddingDocInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  enableAI: boolean;
-  setEnableAI: (val: boolean) => void;
+  removeBiddingDoc: () => void;
 }
 
 const Project: React.FC<ProjectProps> = ({
@@ -96,8 +95,6 @@ const Project: React.FC<ProjectProps> = ({
   biddingDocError,
   handleBiddingDocInput,
   removeBiddingDoc,
-  enableAI,
-  setEnableAI,
 }) => {
   return (
     <motion.div 
@@ -370,7 +367,7 @@ const Project: React.FC<ProjectProps> = ({
             <div className="pt-8 border-t border-slate-100 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 {/* 雷同阈值 */}
-                <div className="space-y-4">
+                <div className="space-y-4 col-span-2">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-bold text-slate-800 border-l-4 border-slate-400 pl-3 leading-none">雷同判定阈值</h3>
                     <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{threshold}%</span>
@@ -390,90 +387,64 @@ const Project: React.FC<ProjectProps> = ({
                     </div>
                   </div>
                 </div>
-
-                {/* AI 深度语义分析 */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-slate-800 border-l-4 border-slate-400 pl-3 leading-none">AI 深度语义分析</h3>
-                  <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-xl border border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-indigo-100 rounded-lg">
-                        <Zap className="w-5 h-5 text-indigo-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-slate-800">启用 AI 语义识别</p>
-                        <p className="text-[11px] text-slate-500">识别同义词替换、语序调整等高级雷同手段</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => setEnableAI(!enableAI)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${enableAI ? 'bg-indigo-600' : 'bg-slate-300'}`}
-                    >
-                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enableAI ? 'translate-x-6' : 'translate-x-1'}`} />
-                    </button>
-                  </div>
-                </div>
               </div>
 
               {/* 招标文件导入 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-slate-800 border-l-4 border-slate-400 pl-3 leading-none">招标文件导入</h3>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 font-medium">过滤招标文件内容</span>
-                      <div className="group relative">
-                        <Info className="w-3.5 h-3.5 text-slate-300" />
-                        <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                          上传招标文件，系统将自动排除标书中引用的招标文件原文，减少误报。
-                        </div>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-slate-800 border-l-4 border-slate-400 pl-3 leading-none">招标文件导入</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-slate-500 font-medium">过滤招标文件内容</span>
+                    <div className="group relative">
+                      <Info className="w-3.5 h-3.5 text-slate-300" />
+                      <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        上传招标文件，系统将自动排除标书中引用的招标文件原文，减少误报。
                       </div>
-                      <button 
-                        onClick={() => setFilterBiddingDoc(!filterBiddingDoc)}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${filterBiddingDoc ? 'bg-indigo-600' : 'bg-slate-300'}`}
-                      >
-                        <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${filterBiddingDoc ? 'translate-x-5' : 'translate-x-1'}`} />
-                      </button>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className={`border-2 border-dashed rounded-xl p-5 text-center transition-all ${biddingDocFile ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-slate-50 hover:border-indigo-300 hover:bg-slate-100/50'}`}>
-                      {biddingDocFile ? (
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-emerald-100 rounded-lg">
-                              <FileText className="w-5 h-5 text-emerald-600" />
-                            </div>
-                            <div className="text-left">
-                              <p className="text-sm font-bold text-slate-800 truncate max-w-[200px]">{biddingDocFile.name}</p>
-                              <p className="text-[11px] text-slate-500">{formatSize(biddingDocFile.size)}</p>
-                            </div>
-                          </div>
-                          <button onClick={removeBiddingDoc} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <label className="cursor-pointer block py-2">
-                          <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                          <p className="text-sm font-bold text-slate-600">点击或拖拽上传招标文件</p>
-                          <p className="text-[10px] text-slate-400 mt-1">支持 .doc, .docx, .pdf 格式</p>
-                          <input type="file" className="hidden" onChange={handleBiddingDocInput} accept=".doc,.docx,.pdf" />
-                        </label>
-                      )}
-                    </div>
-                    {biddingDocError && <p className="text-[10px] text-red-500 font-medium pl-1">{biddingDocError}</p>}
+                    <button 
+                      onClick={() => setFilterBiddingDoc(!filterBiddingDoc)}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${filterBiddingDoc ? 'bg-indigo-600' : 'bg-slate-300'}`}
+                    >
+                      <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${filterBiddingDoc ? 'translate-x-5' : 'translate-x-1'}`} />
+                    </button>
                   </div>
                 </div>
                 
-                <div className="hidden md:block">
-                  {/* Empty space for alignment or additional info */}
-                  <div className="h-full flex flex-col justify-center p-6 bg-slate-50/30 rounded-xl border border-slate-100 border-dashed">
-                    <p className="text-xs text-slate-400 leading-relaxed italic">
-                      提示：导入招标文件不仅可以开启“内容过滤”功能，也是进行“经济标比对”的必要前提。系统将基于招标文件中的清单项进行深度一致性校验。
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-all ${biddingDocFile ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-slate-50 hover:border-indigo-300 hover:bg-slate-100/50'}`}>
+                    {biddingDocFile ? (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-emerald-100 rounded-lg">
+                            <FileText className="w-6 h-6 text-emerald-600" />
+                          </div>
+                          <div className="text-left">
+                            <p className="text-sm font-bold text-slate-800 truncate max-w-[200px]">{biddingDocFile.name}</p>
+                            <p className="text-[11px] text-slate-500">{formatSize(biddingDocFile.size)}</p>
+                          </div>
+                        </div>
+                        <button onClick={removeBiddingDoc} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer block py-4">
+                        <UploadCloud className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+                        <p className="text-sm font-bold text-slate-600">点击或拖拽上传招标文件</p>
+                        <p className="text-[10px] text-slate-400 mt-1">支持 .doc, .docx, .pdf 格式</p>
+                        <input type="file" className="hidden" onChange={handleBiddingDocInput} accept=".doc,.docx,.pdf" />
+                      </label>
+                    )}
+                  </div>
+                  
+                  <div className="flex flex-col justify-center p-6 bg-slate-50/30 rounded-xl border border-slate-100 border-dashed">
+                    <p className="text-xs text-slate-500 leading-relaxed italic">
+                      <span className="font-bold text-amber-600 not-italic block mb-1">重要提示：</span>
+                      导入招标文件不仅可以开启“内容过滤”功能，也是进行“经济标比对”的必要前提。系统将基于招标文件中的清单项进行深度一致性校验。
                     </p>
                   </div>
                 </div>
+                {biddingDocError && <p className="text-[10px] text-red-500 font-medium pl-5">{biddingDocError}</p>}
               </div>
             </div>
           </div>

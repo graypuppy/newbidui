@@ -35,7 +35,6 @@ export type Template = {
     device: string[];
     threshold: number;
     filterBiddingDoc: boolean;
-    enableAI: boolean;
   };
 };
 

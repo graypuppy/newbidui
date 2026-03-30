@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   UploadCloud, 
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { FileItem, PageType } from '../../types';
 import { INSPECTION_POINTS, NEWS_ITEMS } from '../../constants';
+import NewsDetailModal from '../modals/NewsDetailModal';
 
 interface HomeProps {
   isLoggedIn: boolean;
@@ -42,6 +43,14 @@ const Home: React.FC<HomeProps> = ({
   historyItems,
   formatSize,
 }) => {
+  const [selectedNews, setSelectedNews] = useState<any>(null);
+  const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
+
+  const handleNewsClick = (news: any) => {
+    setSelectedNews(news);
+    setIsNewsModalOpen(true);
+  };
+
   return (
     <motion.div 
       key="home"
@@ -112,36 +121,8 @@ const Home: React.FC<HomeProps> = ({
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Inspection Points & History */}
+        {/* Left Column: History */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Inspection Points */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                系统检查点
-              </h2>
-              <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center">
-                查看全部规则 <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {INSPECTION_POINTS.map((point) => (
-                <div key={point.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-slate-50 rounded-lg shrink-0">
-                      {point.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800 mb-1">{point.title}</h3>
-                      <p className="text-sm text-slate-500 leading-relaxed">{point.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* History Section */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -241,7 +222,11 @@ const Home: React.FC<HomeProps> = ({
             </div>
             <div className="space-y-4">
               {NEWS_ITEMS.map((news) => (
-                <a key={news.id} href="#" className="block group">
+                <button 
+                  key={news.id} 
+                  onClick={() => handleNewsClick(news)}
+                  className="w-full text-left block group"
+                >
                   <div className="flex items-start gap-3">
                     <span className={`shrink-0 mt-0.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${
                       news.type === '公告' ? 'bg-blue-50 text-blue-600 border-blue-200' :
@@ -258,7 +243,7 @@ const Home: React.FC<HomeProps> = ({
                       <p className="text-xs text-slate-400 mt-1.5">{news.date}</p>
                     </div>
                   </div>
-                </a>
+                </button>
               ))}
             </div>
             <button className="w-full mt-5 py-2 text-sm text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-medium">
@@ -294,6 +279,12 @@ const Home: React.FC<HomeProps> = ({
           </section>
         </div>
       </div>
+
+      <NewsDetailModal 
+        isOpen={isNewsModalOpen} 
+        onClose={() => setIsNewsModalOpen(false)} 
+        news={selectedNews} 
+      />
     </motion.div>
   );
 };
