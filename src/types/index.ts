@@ -38,7 +38,7 @@ export type Template = {
   };
 };
 
-export type PageType = 'home' | 'project' | 'comparing' | 'report' | 'history' | 'rules';
+export type PageType = 'home' | 'project' | 'comparing' | 'report' | 'history' | 'rules' | 'news';
 
 export type PdfPreviewState = {
   isOpen: boolean;

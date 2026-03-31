@@ -271,7 +271,10 @@ const Home: React.FC<HomeProps> = ({
                 </button>
               ))}
             </div>
-            <button className="w-full mt-5 py-2 text-sm text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-medium">
+            <button 
+              onClick={() => setCurrentPage('news')}
+              className="w-full mt-5 py-2 text-sm text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+            >
               查看更多资讯
             </button>
           </section>
